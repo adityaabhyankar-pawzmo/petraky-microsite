@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Petraky — A society built for dogs</title>
+    <meta name="description" content="Petraky — a society built for dogs." />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,100,200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="src/style.css?v=72" />
+  </head>
+  <body>
+    <div id="splash" class="splash" aria-hidden="false">
+      <div class="tv" id="tv">
+        <video
+          id="splash-video"
+          class="splash-video"
+          src="splash.mp4"
+          poster="poster.png"
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+        ></video>
+        <div class="tv-grain"></div>
+        <div class="tv-scanlines"></div>
+        <div class="tv-vignette"></div>
+      </div>
+      <img
+        class="splash-logo"
+        src="logo.png"
+        alt="Petraky — A society built for dogs"
+        width="519"
+        height="208"
+      />
+      <div class="tv-flash" id="tv-flash"></div>
+      <button class="splash-skip" id="skip" type="button">Skip</button>
+    </div>
+
+    <main id="site" class="site">
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track"></div>
+      </div>
+
+      <header class="nav">
+        <a class="nav-logo" href="#site" aria-label="Petraky">
+          <img
+            src="assets/petraky-wordmark.svg?v=2"
+            alt=""
+            width="113.171"
+            height="28"
+          />
+        </a>
+        <a class="nav-cta" href="#founding">Join the pack</a>
+      </header>
+
+      <section class="hero">
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/hero-desktop.png" alt="" />
+        </div>
+        <div class="hero-copy">
+          <p class="pill">Early access to 100 dog parents</p>
+          <h1 class="hero-headline">
+            <span class="hero-headline-line is-in">Leo walked 2.3 km this morning.</span>
+            <span class="hero-headline-line" aria-hidden="true"></span>
+          </h1>
+          <p class="hero-lede">
+            One lightweight wearable on their collar. Their activity, rest, and
+            sleep tracked around the clock and sent straight to your phone.
+          </p>
+          <div class="cta-block">
+            <a class="cta" href="#founding">Be a founding member</a>
+            <p class="cta-note">
+              <img src="assets/clock.svg" alt="" width="16" height="16" />
+              Limited to 100 dog parents
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="day">
+        <div class="day-pin">
+          <h2>
+            That was one moment.
+            <span>Here’s a full day.</span>
+          </h2>
+          <div class="day-viewport">
+            <div class="day-scroller">
+          <article class="day-card">
+            <div
+              class="viz viz--morning"
+              role="img"
+              aria-label="7:12 AM. Activity detected. 18% daily goal."
+            >
+              <div class="viz-panel">
+                <div class="viz-head">
+                  <span class="viz-time">7:12 AM</span>
+                  <span class="viz-status">Activity detected</span>
+                </div>
+                <div class="viz-body">
+                  <div class="viz-pills">
+                    <div class="viz-pill viz-pill--track">
+                      <div class="viz-pill-fill">
+                        <img
+                          class="viz-sun"
+                          src="assets/sun-outline.svg"
+                          alt=""
+                          width="28"
+                          height="28"
+                        />
+                      </div>
+                    </div>
+                    <div class="viz-pill viz-pill--empty"></div>
+                    <div class="viz-pill viz-pill--empty"></div>
+                  </div>
+                </div>
+                <div class="viz-foot">
+                  <span>18%</span>
+                  <span>daily goal</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-copy">
+              <h3>Day started</h3>
+              <p>Light morning activity around the house.</p>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div
+              class="viz viz--walk"
+              role="img"
+              aria-label="10:04 AM. High intensity. 2.1 km, 34 min, 486 cal."
+            >
+              <div class="viz-panel">
+                <div class="viz-head">
+                  <span class="viz-time">10:04 AM</span>
+                  <span class="viz-status">High intensity</span>
+                </div>
+                <div class="viz-body">
+                  <div class="viz-bars" aria-hidden="true">
+                    <span class="viz-bar" style="--h: 44%"></span>
+                    <span class="viz-bar" style="--h: 58%"></span>
+                    <span class="viz-bar" style="--h: 82%"></span>
+                    <span class="viz-bar" style="--h: 33%"></span>
+                    <span class="viz-bar" style="--h: 67%"></span>
+                    <span class="viz-bar" style="--h: 100%"></span>
+                    <span class="viz-bar" style="--h: 46%"></span>
+                    <span class="viz-bar" style="--h: 27%"></span>
+                  </div>
+                </div>
+                <div class="viz-foot viz-foot--triple">
+                  <span>2.1 km</span>
+                  <span>34 min</span>
+                  <span>486 cal</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-copy">
+              <h3>2.1 km walked</h3>
+              <p>34 minutes of high-intensity movement.</p>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div
+              class="viz viz--sleep"
+              role="img"
+              aria-label="2:00 PM. Sleep. 2h 14m uninterrupted."
+            >
+              <div class="viz-panel">
+                <div class="viz-head">
+                  <span class="viz-time">2:00 PM</span>
+                  <span class="viz-status">Sleep</span>
+                </div>
+                <div class="viz-body">
+                  <div class="viz-wave" aria-hidden="true">
+                    <div class="viz-wave-track">
+                      <svg
+                        class="viz-wave-svg"
+                        viewBox="0 0 535.067 72.7026"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        preserveAspectRatio="none"
+                      >
+                        <path
+                          d="M12.124 56.7963L45.579 31.2963C65.3394 16.2346 92.7285 16.2346 112.489 31.2963C132.249 46.3581 159.638 46.3581 179.399 31.2963C199.159 16.2346 226.548 16.2346 246.309 31.2963C266.069 46.3581 293.458 46.3581 313.219 31.2963C332.979 16.2346 360.368 16.2346 380.129 31.2963L384.692 34.7749C401.757 47.782 425.41 47.782 442.475 34.7749C463.453 18.7846 493.43 22.8756 509.357 43.9023L519.124 56.7963"
+                          stroke="#A6A0ED"
+                          stroke-width="40"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      <svg
+                        class="viz-wave-svg"
+                        viewBox="0 0 535.067 72.7026"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M12.124 56.7963L45.579 31.2963C65.3394 16.2346 92.7285 16.2346 112.489 31.2963C132.249 46.3581 159.638 46.3581 179.399 31.2963C199.159 16.2346 226.548 16.2346 246.309 31.2963C266.069 46.3581 293.458 46.3581 313.219 31.2963C332.979 16.2346 360.368 16.2346 380.129 31.2963L384.692 34.7749C401.757 47.782 425.41 47.782 442.475 34.7749C463.453 18.7846 493.43 22.8756 509.357 43.9023L519.124 56.7963"
+                          stroke="#A6A0ED"
+                          stroke-width="40"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="viz-foot">
+                  <span>2h 14m</span>
+                  <span>Uninterrupted</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-copy">
+              <h3>Rest &amp; sleep</h3>
+              <p>2 hours of uninterrupted rest and sleep.</p>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div
+              class="viz viz--goal"
+              role="img"
+              aria-label="8:32 PM. Daily summary. 4.3 km total, up 12% vs last week."
+            >
+              <div class="viz-panel">
+                <div class="viz-head">
+                  <span class="viz-time">8:32 PM</span>
+                  <span class="viz-status">Daily summary</span>
+                </div>
+                <div class="viz-body">
+                  <svg
+                    class="viz-ring"
+                    viewBox="0 0 160 160"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      class="viz-ring-track"
+                      cx="80"
+                      cy="80"
+                      r="66"
+                      stroke="#D4EAFF"
+                      stroke-width="28"
+                    />
+                    <circle
+                      class="viz-ring-progress"
+                      cx="80"
+                      cy="80"
+                      r="66"
+                      stroke="#EBFFB3"
+                      stroke-width="28"
+                      stroke-linecap="round"
+                      pathLength="100"
+                    />
+                    <g class="viz-ring-dot-orbit">
+                      <circle
+                        class="viz-ring-dot"
+                        cx="80"
+                        cy="14"
+                        r="10"
+                        fill="#D4EAFF"
+                        stroke="#EBFFB3"
+                        stroke-width="3"
+                      />
+                    </g>
+                  </svg>
+                </div>
+                <div class="viz-foot">
+                  <span>4.3 km total</span>
+                  <span>↑ 12% vs last week</span>
+                </div>
+              </div>
+            </div>
+            <div class="day-card-copy">
+              <h3>Goal hit!</h3>
+              <p>Daily activity goal reached.</p>
+            </div>
+          </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="founding" id="founding">
+        <div class="founding-inner">
+          <h2>What you get as a <span>founding member.</span></h2>
+          <div class="perk-grid">
+            <div class="perk-row">
+              <div class="perk">
+                <div class="perk-icon">
+                  <span class="perk-ripple" aria-hidden="true"></span>
+                  <img src="assets/wearable-app-access.png" alt="" width="80" height="80" />
+                </div>
+                <div class="perk-copy">
+                  <h3>It's on us</h3>
+                  <p>The wearable, the app, yours to use for the entire program.</p>
+                </div>
+              </div>
+              <div class="perk">
+                <div class="perk-icon">
+                  <span class="perk-ripple" aria-hidden="true"></span>
+                  <img src="assets/founding-partner-pricing.png" alt="" width="80" height="80" />
+                </div>
+                <div class="perk-copy">
+                  <h3>A price just for you</h3>
+                  <p>Pricing that rewards you for being first.</p>
+                </div>
+              </div>
+            </div>
+            <div class="perk-row">
+              <div class="perk">
+                <div class="perk-icon">
+                  <span class="perk-ripple" aria-hidden="true"></span>
+                  <img src="assets/early-product-access.png" alt="" width="80" height="80" />
+                </div>
+                <div class="perk-copy">
+                  <h3>Always first</h3>
+                  <p>Whatever we build next, you see it first.</p>
+                </div>
+              </div>
+              <div class="perk">
+                <div class="perk-icon">
+                  <span class="perk-ripple" aria-hidden="true"></span>
+                  <img src="assets/exclusive-feedback-events.png" alt="" width="80" height="80" />
+                </div>
+                <div class="perk-copy">
+                  <h3>Your seat at the table</h3>
+                  <p>Your feedback directly shapes what we build.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cta-block">
+            <a class="cta" href="#founding">Be a founding member</a>
+            <p class="cta-note">
+              <img src="assets/clock.svg" alt="" width="16" height="16" />
+              Limited to 100 dog parents
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ask" aria-labelledby="ask-heading">
+        <div class="ask-band">
+          <article class="ask-card">
+            <h2 id="ask-heading">What we ask <span>in return.</span></h2>
+            <ul class="ask-list">
+              <li>
+                <span class="ask-icon" aria-hidden="true">📱</span>
+                <span>Use Pawzmo daily for 4 weeks</span>
+              </li>
+              <li>
+                <span class="ask-icon" aria-hidden="true">💬</span>
+                <span>Share honest feedback weekly</span>
+              </li>
+              <li>
+                <span class="ask-icon" aria-hidden="true">🐛</span>
+                <span>Report bugs and glitches as you spot them</span>
+              </li>
+              <li>
+                <span class="ask-icon" aria-hidden="true">❤️</span>
+                <span>Share your experience, if it genuinely moves you</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="note">
+        <div class="note-left">
+          <div class="note-copy">
+            <p class="note-kicker">A note from the founders</p>
+            <h2>
+              We started Petraky because we wanted to
+              <span>understand our own dog better.</span>
+            </h2>
+          </div>
+          <div class="cta-block note-cta">
+            <a class="cta" href="#founding">Be a founding member</a>
+            <p class="cta-note">
+              <img src="assets/clock.svg" alt="" width="16" height="16" />
+              Limited to 100 dog parents
+            </p>
+          </div>
+        </div>
+        <aside class="note-card">
+          <p>
+            We’re a small team of pet parents, engineers, and analysts in India,
+            building something we wish existed for our own dog. This program is
+            how we make sure it actually works, with real dogs, real feedback,
+            and real pet parents like you.
+          </p>
+          <div class="note-rule"></div>
+          <div class="note-team">
+            <div class="note-avatar" aria-hidden="true">
+              <img class="avatar-outline" src="assets/avatar-outline.svg" alt="" width="30.6925" height="32.2972" />
+              <img class="avatar-body" src="assets/avatar-body.svg" alt="" width="23.7754" height="30.1633" />
+              <img class="avatar-nose" src="assets/avatar-nose.svg" alt="" width="13.1933" height="4.85455" />
+            </div>
+            <div class="note-team-copy">
+              <strong>Petraky team</strong>
+              <span>Mumbai, India</span>
+            </div>
+          </div>
+        </aside>
+        <div class="cta-block note-cta-mobile">
+          <a class="cta" href="#founding">Be a founding member</a>
+          <p class="cta-note">
+            <img src="assets/clock.svg" alt="" width="16" height="16" />
+            Limited to 100 dog parents
+          </p>
+        </div>
+      </section>
+
+      <div class="ticker ticker-bottom" aria-hidden="true">
+        <div class="ticker-track"></div>
+      </div>
+
+      <footer class="legal">
+        <p>Petraky · For dogs and their people</p>
+        <p>©&nbsp;2026&nbsp;Pawzmo Petcare Solutions Pvt. Ltd. All rights reserved.</p>
+      </footer>
+    </main>
+
+    <script type="module" src="src/main.js?v=45"></script>
+  </body>
+</html>
