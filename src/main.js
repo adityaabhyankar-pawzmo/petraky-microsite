@@ -304,12 +304,13 @@ function initHeroHeadline() {
     "Leo walked 2.3 km this morning.",
     "Simba slept 7 hours last night.",
     "Bella rested well after her evening walk.",
+    "Coco hit her activity goal today.",
   ];
   const slots = [...headline.querySelectorAll(".hero-headline-line")];
   if (slots.length < 2) return;
 
   const HOLD_MS = 5500;
-  const TRANSITION_MS = 700;
+  const TRANSITION_MS = 800;
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   let index = 0;
