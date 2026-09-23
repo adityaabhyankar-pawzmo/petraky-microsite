@@ -8,18 +8,29 @@
     />
     <title>Petraky — A society built for dogs</title>
     <meta name="description" content="Petraky — a society built for dogs." />
-    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,100,200..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="src/style.css?v=72" />
+    <link rel="stylesheet" href="src/style.css?v=96" />
   </head>
   <body>
     <div id="splash" class="splash" aria-hidden="false">
       <div class="tv" id="tv">
+        <video
+          id="splash-video-bleed"
+          class="splash-video splash-video-bleed"
+          src="splash.mp4"
+          poster="poster.png"
+          muted
+          playsinline
+          preload="auto"
+          aria-hidden="true"
+          tabindex="-1"
+        ></video>
         <video
           id="splash-video"
           class="splash-video"
@@ -46,10 +57,6 @@
     </div>
 
     <main id="site" class="site">
-      <div class="ticker" aria-hidden="true">
-        <div class="ticker-track"></div>
-      </div>
-
       <header class="nav">
         <a class="nav-logo" href="#site" aria-label="Petraky">
           <img
@@ -69,12 +76,13 @@
         <div class="hero-copy">
           <p class="pill">Early access to 100 dog parents</p>
           <h1 class="hero-headline">
-            <span class="hero-headline-line is-in">Leo walked 2.3 km this morning.</span>
+            <span class="hero-headline-line is-in">Leo <span class="hero-accent">walked 2.3 km</span> this morning.</span>
             <span class="hero-headline-line" aria-hidden="true"></span>
           </h1>
           <p class="hero-lede">
-            One lightweight wearable on their collar. Their activity, rest, and
-            sleep tracked around the clock and sent straight to your phone.
+            <span class="hero-accent">One lightweight wearable on their collar.</span>
+            Their activity, rest, and sleep tracked around the clock and sent
+            straight to your phone.
           </p>
           <div class="cta-block">
             <a class="cta" href="#founding">Be a founding member</a>
@@ -85,6 +93,10 @@
           </div>
         </div>
       </section>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track"></div>
+      </div>
 
       <section class="day">
         <div class="day-pin">
@@ -298,51 +310,85 @@
 
       <section class="founding" id="founding">
         <div class="founding-inner">
-          <h2>What you get as a <span>founding member.</span></h2>
+          <div class="founding-intro">
+            <h2>
+              The <span>founding member</span> program.
+            </h2>
+            <p class="founding-lede">
+              4 weeks with Petraky on your dog. No cost, no catch, just your
+              honest take.
+            </p>
+          </div>
           <div class="perk-grid">
             <div class="perk-row">
-              <div class="perk">
-                <div class="perk-icon">
-                  <span class="perk-ripple" aria-hidden="true"></span>
-                  <img src="assets/wearable-app-access.png" alt="" width="80" height="80" />
+              <article class="perk">
+                <div class="perk-icon perk-icon--gift">
+                  <img
+                    src="assets/perk-free-to-use.png"
+                    alt=""
+                    width="100"
+                    height="100"
+                  />
                 </div>
                 <div class="perk-copy">
-                  <h3>It's on us</h3>
-                  <p>The wearable, the app, yours to use for the entire program.</p>
+                  <h3>Free to use</h3>
+                  <p>The wearable and app are yours for the program. No cost.</p>
                 </div>
-              </div>
-              <div class="perk">
-                <div class="perk-icon">
-                  <span class="perk-ripple" aria-hidden="true"></span>
-                  <img src="assets/founding-partner-pricing.png" alt="" width="80" height="80" />
+              </article>
+              <article class="perk">
+                <div class="perk-icon perk-icon--wear">
+                  <img
+                    src="assets/perk-wear-track.png"
+                    alt=""
+                    width="100"
+                    height="100"
+                  />
                 </div>
                 <div class="perk-copy">
-                  <h3>A price just for you</h3>
-                  <p>Pricing that rewards you for being first.</p>
+                  <h3>Wear it. Track it.</h3>
+                  <p>Put it on your dog and use the app daily for 4 weeks.</p>
                 </div>
-              </div>
+              </article>
             </div>
             <div class="perk-row">
-              <div class="perk">
-                <div class="perk-icon">
-                  <span class="perk-ripple" aria-hidden="true"></span>
-                  <img src="assets/early-product-access.png" alt="" width="80" height="80" />
+              <article class="perk">
+                <div class="perk-icon perk-icon--chat">
+                  <img
+                    src="assets/perk-tell-truth.png"
+                    alt=""
+                    width="100"
+                    height="100"
+                  />
+                  <span class="perk-chat-dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
                 </div>
                 <div class="perk-copy">
-                  <h3>Always first</h3>
-                  <p>Whatever we build next, you see it first.</p>
+                  <h3>Tell us the truth</h3>
+                  <p>
+                    Share your feedback weekly and a short testimonial at the
+                    end.
+                  </p>
                 </div>
-              </div>
-              <div class="perk">
-                <div class="perk-icon">
-                  <span class="perk-ripple" aria-hidden="true"></span>
-                  <img src="assets/exclusive-feedback-events.png" alt="" width="80" height="80" />
+              </article>
+              <article class="perk">
+                <div class="perk-icon perk-icon--tag">
+                  <img
+                    src="assets/perk-get-rewarded.png"
+                    alt=""
+                    width="100"
+                    height="100"
+                  />
                 </div>
                 <div class="perk-copy">
-                  <h3>Your seat at the table</h3>
-                  <p>Your feedback directly shapes what we build.</p>
+                  <h3>Get rewarded</h3>
+                  <p>
+                    Finish the program, get special pricing when we launch.
+                  </p>
                 </div>
-              </div>
+              </article>
             </div>
           </div>
           <div class="cta-block">
@@ -355,31 +401,9 @@
         </div>
       </section>
 
-      <section class="ask" aria-labelledby="ask-heading">
-        <div class="ask-band">
-          <article class="ask-card">
-            <h2 id="ask-heading">What we ask <span>in return.</span></h2>
-            <ul class="ask-list">
-              <li>
-                <span class="ask-icon" aria-hidden="true">📱</span>
-                <span>Use Pawzmo daily for 4 weeks</span>
-              </li>
-              <li>
-                <span class="ask-icon" aria-hidden="true">💬</span>
-                <span>Share honest feedback weekly</span>
-              </li>
-              <li>
-                <span class="ask-icon" aria-hidden="true">🐛</span>
-                <span>Report bugs and glitches as you spot them</span>
-              </li>
-              <li>
-                <span class="ask-icon" aria-hidden="true">❤️</span>
-                <span>Share your experience, if it genuinely moves you</span>
-              </li>
-            </ul>
-          </article>
-        </div>
-      </section>
+      <div class="ticker ticker-bottom" aria-hidden="true">
+        <div class="ticker-track"></div>
+      </div>
 
       <section class="note">
         <div class="note-left">
@@ -407,10 +431,8 @@
           </p>
           <div class="note-rule"></div>
           <div class="note-team">
-            <div class="note-avatar" aria-hidden="true">
-              <img class="avatar-outline" src="assets/avatar-outline.svg" alt="" width="30.6925" height="32.2972" />
-              <img class="avatar-body" src="assets/avatar-body.svg" alt="" width="23.7754" height="30.1633" />
-              <img class="avatar-nose" src="assets/avatar-nose.svg" alt="" width="13.1933" height="4.85455" />
+            <div class="note-avatar">
+              <img src="assets/petraky-team.png" alt="" width="80" height="80" />
             </div>
             <div class="note-team-copy">
               <strong>Petraky team</strong>
@@ -427,16 +449,12 @@
         </div>
       </section>
 
-      <div class="ticker ticker-bottom" aria-hidden="true">
-        <div class="ticker-track"></div>
-      </div>
-
       <footer class="legal">
         <p>Petraky · For dogs and their people</p>
         <p>©&nbsp;2026&nbsp;Pawzmo Petcare Solutions Pvt. Ltd. All rights reserved.</p>
       </footer>
     </main>
 
-    <script type="module" src="src/main.js?v=45"></script>
+    <script type="module" src="src/main.js?v=65"></script>
   </body>
 </html>

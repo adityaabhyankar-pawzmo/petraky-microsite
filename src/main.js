@@ -1,12 +1,72 @@
 const splash = document.querySelector("#splash");
 const video = document.querySelector("#splash-video");
+const videoBleed = document.querySelector("#splash-video-bleed");
 const skip = document.querySelector("#skip");
 const site = document.querySelector("#site");
+const mobileSplash = window.matchMedia("(max-width: 767px)");
 
 const CRT_MS = 1200;
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let exiting = false;
+
+function pauseSplashVideos() {
+  try {
+    video.pause();
+  } catch {
+    /* ignore */
+  }
+  try {
+    videoBleed?.pause();
+  } catch {
+    /* ignore */
+  }
+}
+
+function syncBleed() {
+  if (!videoBleed || !mobileSplash.matches) {
+    try {
+      videoBleed?.pause();
+    } catch {
+      /* ignore */
+    }
+    return;
+  }
+  try {
+    if (Math.abs(videoBleed.currentTime - video.currentTime) > 0.3) {
+      videoBleed.currentTime = video.currentTime;
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+/* Keep the sharp frame just under cover on any phone aspect ratio. */
+const SPLASH_ZOOM_OUT = 0.88;
+
+function updateSplashFrame() {
+  if (!splash || !video) return;
+
+  if (!mobileSplash.matches) {
+    video.style.transform = "";
+    return;
+  }
+
+  const vw = splash.clientWidth || window.innerWidth;
+  const vh = splash.clientHeight || window.innerHeight;
+  if (vw <= 0 || vh <= 0) return;
+
+  const ratio =
+    video.videoWidth > 0 && video.videoHeight > 0
+      ? video.videoWidth / video.videoHeight
+      : 16 / 9;
+
+  const containH = vw / ratio;
+  const containW = vh * ratio;
+  const coverFactor = Math.max(vh / containH, vw / containW);
+  const scale = Math.max(1, coverFactor * SPLASH_ZOOM_OUT);
+  video.style.transform = `scale(${scale})`;
+}
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
@@ -42,13 +102,11 @@ function initTickers() {
     "A society built for DOGS",
     "A society built for DOGS",
     "A society built for DOGS",
-    "A society built for pets",
+    "A society built for DOGS",
   ];
   const dog = `
     <span class="ticker-dog">
-      <img class="ticker-dog-outline" src="assets/dog-outline.svg?v=2" alt="" width="27.6255" height="29.0698" />
-      <img class="ticker-dog-body" src="assets/dog-body.svg?v=2" alt="" width="21.3996" height="27.1492" />
-      <img class="ticker-dog-nose" src="assets/dog-nose.svg?v=2" alt="" width="11.8749" height="4.36945" />
+      <img src="assets/paw-print.svg?v=2" alt="" width="18" height="18" />
     </span>`;
   const set = `<div class="ticker-set">${phrases
     .map((text) => `<span class="ticker-copy">${text}</span>${dog}`)
@@ -57,6 +115,96 @@ function initTickers() {
   for (const track of document.querySelectorAll(".ticker-track")) {
     track.innerHTML = set + set;
   }
+
+  initTickerMotion();
+}
+
+function initTickerMotion() {
+  const tickers = [...document.querySelectorAll(".ticker")];
+  if (!tickers.length) return;
+
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const DURATION_S = 28;
+  const items = tickers.map((ticker) => ({
+    ticker,
+    track: ticker.querySelector(".ticker-track"),
+    loop: 0,
+  }));
+
+  function measure() {
+    for (const item of items) {
+      if (!item.track) continue;
+      const sets = item.track.querySelectorAll(".ticker-set");
+      item.loop =
+        sets.length >= 2
+          ? sets[1].offsetLeft - sets[0].offsetLeft
+          : item.track.scrollWidth / 2;
+      item.track.style.transform = "translate3d(0,0,0)";
+    }
+  }
+
+  let offset = 0;
+  let last = performance.now();
+  let raf = 0;
+  let running = false;
+
+  function apply() {
+    for (const item of items) {
+      if (item.loop <= 0 || !item.track) continue;
+      /* Whole CSS pixels only — fractional translateX softens type. */
+      const px = Math.round(offset % item.loop);
+      item.track.style.transform = `translate3d(${-px}px,0,0)`;
+    }
+  }
+
+  function frame(now) {
+    if (!running) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const loop = items.find((item) => item.loop > 0)?.loop || 0;
+    if (loop > 0) {
+      offset = (offset + (loop / DURATION_S) * dt) % loop;
+      apply();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start() {
+    cancelAnimationFrame(raf);
+    measure();
+    if (motionQuery.matches) {
+      running = false;
+      offset = 0;
+      apply();
+      return;
+    }
+    running = true;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+
+  window.addEventListener("resize", () => {
+    measure();
+    apply();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      running = false;
+      cancelAnimationFrame(raf);
+    } else {
+      start();
+    }
+  });
+  motionQuery.addEventListener("change", start);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => {
+      measure();
+      apply();
+    });
+  }
+
+  start();
 }
 
 initTickers();
@@ -68,12 +216,7 @@ function endSplash() {
   skip.setAttribute("disabled", "true");
   splash.classList.add("is-off");
   splash.setAttribute("aria-hidden", "true");
-
-  try {
-    video.pause();
-  } catch {
-    /* ignore */
-  }
+  pauseSplashVideos();
 
   const delay = reducedMotion ? 80 : CRT_MS;
 
@@ -90,11 +233,28 @@ function endSplash() {
 async function startSplash() {
   video.muted = true;
   video.playsInline = true;
+  if (videoBleed) {
+    videoBleed.muted = true;
+    videoBleed.playsInline = true;
+    videoBleed.loop = true;
+  }
+  updateSplashFrame();
 
   const tryPlay = async () => {
     try {
       await video.play();
-      return !video.paused;
+      if (!video.paused) {
+        syncBleed();
+        if (videoBleed && mobileSplash.matches) {
+          try {
+            await videoBleed.play();
+          } catch {
+            /* ignore */
+          }
+        }
+        return true;
+      }
+      return false;
     } catch {
       return false;
     }
@@ -120,6 +280,19 @@ async function startSplash() {
 
 video.addEventListener("ended", endSplash);
 video.addEventListener("error", endSplash);
+video.addEventListener("timeupdate", syncBleed);
+video.addEventListener("loadedmetadata", updateSplashFrame);
+window.addEventListener("resize", updateSplashFrame);
+mobileSplash.addEventListener("change", () => {
+  updateSplashFrame();
+  if (exiting) return;
+  if (mobileSplash.matches && !video.paused) {
+    syncBleed();
+    videoBleed?.play().catch(() => {});
+  } else {
+    videoBleed?.pause();
+  }
+});
 skip.addEventListener("click", endSplash);
 window.setTimeout(() => {
   if (!exiting && video.paused) endSplash();
@@ -150,13 +323,15 @@ function initDayCarousel() {
 
   const cards = [...track.querySelectorAll(".day-card")];
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  /* Sticky scrub from tablet/desktop up; phones keep the swipe carousel. */
+  const pinQuery = window.matchMedia("(min-width: 700px)");
   const landscapeQuery = window.matchMedia(
     "(max-height: 500px) and (orientation: landscape)"
   );
   let overflow = 0;
-  let travel = 0;
   let running = false;
   let playedThrough = -1;
+  let pinMode = false;
 
   function navHeight() {
     const raw = getComputedStyle(document.documentElement).getPropertyValue(
@@ -166,7 +341,12 @@ function initDayCarousel() {
   }
 
   function shouldPin() {
-    return !motionQuery.matches && !landscapeQuery.matches;
+    return pinQuery.matches && !motionQuery.matches && !landscapeQuery.matches;
+  }
+
+  function resetPlayed() {
+    playedThrough = -1;
+    for (const card of cards) card.classList.remove("is-played");
   }
 
   function markPlayedThrough(index) {
@@ -178,23 +358,23 @@ function initDayCarousel() {
     playedThrough = next;
   }
 
-  function markAllPlayed() {
-    markPlayedThrough(cards.length - 1);
-  }
-
   function focusedIndex(progress) {
     if (!cards.length) return 0;
-    if (overflow <= 0) return 0;
     return Math.round(progress * (cards.length - 1));
   }
 
   function measure() {
-    if (!shouldPin()) {
+    const nextPin = shouldPin();
+    if (nextPin !== pinMode) {
+      resetPlayed();
+      pinMode = nextPin;
+    }
+
+    if (!pinMode) {
       overflow = 0;
-      travel = 0;
       section.style.height = "";
       track.style.transform = "";
-      markAllPlayed();
+      onViewportScroll();
       return;
     }
 
@@ -203,35 +383,30 @@ function initDayCarousel() {
     overflow = Math.max(0, track.scrollWidth - viewport.clientWidth);
     track.style.transform = previous;
 
-    const steps = Math.max(track.children.length - 1, 1);
-    travel =
-      overflow > 0
-        ? Math.max(
-            Math.round(overflow * 1.2),
-            Math.round(steps * window.innerHeight * 0.7)
-          )
-        : 0;
+    const steps = Math.max(cards.length - 1, 1);
+    const travel = Math.max(
+      overflow > 0 ? Math.round(overflow * 1.2) : 0,
+      Math.round(steps * window.innerHeight * 0.7)
+    );
 
-    section.style.height = travel > 0 ? `${pin.offsetHeight + travel}px` : "";
-
-    if (overflow <= 0) {
-      markAllPlayed();
-    }
+    section.style.height = `${pin.offsetHeight + travel}px`;
   }
 
   function update() {
-    overflow = Math.max(0, track.scrollWidth - viewport.clientWidth);
+    if (!pinMode) return;
 
-    if (overflow <= 0) {
-      track.style.transform = "translate3d(0,0,0)";
-      if (cardsInView()) markPlayedThrough(0);
-      return;
-    }
+    overflow = Math.max(0, track.scrollWidth - viewport.clientWidth);
 
     const travelPx = Math.max(1, section.offsetHeight - pin.offsetHeight);
     const scrolled = navHeight() - section.getBoundingClientRect().top;
     const progress = Math.min(1, Math.max(0, scrolled / travelPx));
-    track.style.transform = `translate3d(${-progress * overflow}px,0,0)`;
+
+    if (overflow > 0) {
+      track.style.transform = `translate3d(${-progress * overflow}px,0,0)`;
+    } else {
+      track.style.transform = "translate3d(0,0,0)";
+    }
+
     if (cardsInView()) {
       markPlayedThrough(focusedIndex(progress));
     }
@@ -244,7 +419,7 @@ function initDayCarousel() {
   }
 
   function onViewportScroll() {
-    if (shouldPin()) return;
+    if (pinMode) return;
     const centerX = viewport.scrollLeft + viewport.clientWidth / 2;
     let best = 0;
     let bestDist = Infinity;
@@ -277,6 +452,7 @@ function initDayCarousel() {
     update();
   }
 
+  pinMode = shouldPin();
   measure();
   update();
   startLoop();
@@ -286,6 +462,7 @@ function initDayCarousel() {
   window.addEventListener("resize", onResize);
   window.visualViewport?.addEventListener("resize", onResize);
   motionQuery.addEventListener("change", onResize);
+  pinQuery.addEventListener("change", onResize);
   landscapeQuery.addEventListener("change", onResize);
   viewport.addEventListener("scroll", onViewportScroll, { passive: true });
 
@@ -301,10 +478,10 @@ function initHeroHeadline() {
   if (!headline) return;
 
   const lines = [
-    "Leo walked 2.3 km this morning.",
-    "Simba slept 7 hours last night.",
-    "Bella rested well after her evening walk.",
-    "Coco hit her activity goal today.",
+    'Leo <span class="hero-accent">walked 2.3 km</span> this morning.',
+    'Simba <span class="hero-accent">slept 7 hours</span> last night.',
+    'Bella <span class="hero-accent">rested well</span> after her evening walk.',
+    'Coco hit her <span class="hero-accent">activity goal</span> today.',
   ];
   const slots = [...headline.querySelectorAll(".hero-headline-line")];
   if (slots.length < 2) return;
@@ -319,28 +496,20 @@ function initHeroHeadline() {
   let clearing = 0;
   let started = false;
 
-  slots[0].textContent = lines[0];
+  slots[0].innerHTML = lines[0];
   slots[0].classList.add("is-in");
+  slots[0].classList.remove("is-out", "is-entering");
   slots[0].removeAttribute("aria-hidden");
   slots[1].textContent = "";
-  slots[1].classList.remove("is-in", "is-out");
+  slots[1].classList.remove("is-in", "is-out", "is-entering");
   slots[1].setAttribute("aria-hidden", "true");
 
-  function lockHeight() {
-    const probe = document.createElement("span");
-    probe.className = "hero-headline-line is-in";
-    probe.setAttribute("aria-hidden", "true");
-    probe.style.visibility = "hidden";
-    headline.append(probe);
-
-    let max = 0;
-    for (const text of lines) {
-      probe.textContent = text;
-      max = Math.max(max, probe.offsetHeight);
-    }
-
-    probe.remove();
-    headline.style.minHeight = max ? `${max}px` : "";
+  function syncHeight(primary, secondary) {
+    const h = Math.max(
+      primary?.offsetHeight || 0,
+      secondary?.offsetHeight || 0,
+    );
+    headline.style.height = h ? `${h}px` : "";
   }
 
   function clearTimer() {
@@ -358,15 +527,17 @@ function initHeroHeadline() {
     const incoming = slots[1 - current];
 
     window.clearTimeout(clearing);
-    incoming.textContent = lines[nextIndex];
-    incoming.classList.remove("is-out", "is-in");
+    incoming.innerHTML = lines[nextIndex];
+    incoming.classList.remove("is-out", "is-in", "is-entering");
     void incoming.offsetWidth;
-    incoming.classList.add("is-in");
+    incoming.classList.add("is-in", "is-entering");
     incoming.removeAttribute("aria-hidden");
 
-    outgoing.classList.remove("is-in");
+    outgoing.classList.remove("is-in", "is-entering");
     outgoing.classList.add("is-out");
     outgoing.setAttribute("aria-hidden", "true");
+
+    syncHeight(incoming, outgoing);
 
     current = 1 - current;
     index = nextIndex;
@@ -375,6 +546,8 @@ function initHeroHeadline() {
     clearing = window.setTimeout(() => {
       outgoing.classList.remove("is-out");
       outgoing.textContent = "";
+      incoming.classList.remove("is-entering");
+      syncHeight(incoming);
     }, settle);
 
     schedule();
@@ -385,14 +558,27 @@ function initHeroHeadline() {
     if (document.hidden) clearTimer();
     else schedule();
   });
-  window.addEventListener("resize", lockHeight);
+  window.addEventListener("resize", () => syncHeight(slots[current]));
 
-  lockHeight();
+  syncHeight(slots[0]);
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => syncHeight(slots[current]));
+  }
 
   function start() {
     if (started) return;
     started = true;
     headline.classList.add("is-ready");
+
+    const first = slots[current];
+    first.classList.remove("is-entering");
+    void first.offsetWidth;
+    first.classList.add("is-entering");
+    const settle = motionQuery.matches ? 0 : TRANSITION_MS;
+    clearing = window.setTimeout(() => {
+      first.classList.remove("is-entering");
+    }, settle);
+
     schedule();
   }
 
@@ -438,10 +624,9 @@ initMobileNavCta();
 
 function initParallax() {
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const desktopQuery = window.matchMedia("(min-width: 880px)");
+  const desktopQuery = window.matchMedia("(min-width: 1024px)");
   const hero = document.querySelector(".hero");
   const heroImg = document.querySelector(".hero-media img");
-  const askCard = document.querySelector(".ask-card");
   const note = document.querySelector(".note");
   const noteLeft = document.querySelector(".note-left");
   const noteCard = document.querySelector(".note-card");
@@ -464,13 +649,16 @@ function initParallax() {
 
   function reset() {
     if (heroImg) heroImg.style.transform = "";
-    if (askCard) askCard.style.transform = "";
     if (noteLeft) noteLeft.style.transform = "";
     if (noteCard) noteCard.style.transform = "";
   }
 
+  function enabled() {
+    return desktopQuery.matches && !motionQuery.matches;
+  }
+
   function update() {
-    if (motionQuery.matches) {
+    if (!enabled()) {
       reset();
       return;
     }
@@ -480,12 +668,7 @@ function initParallax() {
       heroImg.style.transform = `translate3d(0, ${y}px, 0) scale(1.16)`;
     }
 
-    if (askCard && inView(askCard, 200)) {
-      const offset = viewOffset(askCard);
-      askCard.style.transform = `translate3d(0, ${Math.round(offset * 42)}px, 0)`;
-    }
-
-    if (desktopQuery.matches && note && noteLeft && noteCard && inView(note)) {
+    if (note && noteLeft && noteCard && inView(note)) {
       const offset = viewOffset(note);
       noteLeft.style.transform = `translate3d(0, ${Math.round(offset * 28)}px, 0)`;
       noteCard.style.transform = `translate3d(0, ${Math.round(offset * -18)}px, 0)`;
@@ -510,21 +693,62 @@ function initParallax() {
     window.requestAnimationFrame(loop);
   }
 
-  motionQuery.addEventListener("change", () => {
-    if (motionQuery.matches) {
+  function sync() {
+    if (!enabled()) {
       running = false;
       reset();
       return;
     }
     start();
-  });
+  }
 
-  desktopQuery.addEventListener("change", update);
+  motionQuery.addEventListener("change", sync);
+  desktopQuery.addEventListener("change", sync);
   window.addEventListener("scroll", update, { passive: true });
   document.addEventListener("scroll", update, { passive: true, capture: true });
   window.addEventListener("resize", update);
 
-  if (!motionQuery.matches) start();
+  if (enabled()) start();
 }
 
 initParallax();
+
+function initPerkMotion() {
+  const section = document.querySelector("#founding");
+  if (!section) return;
+
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function setPaused(paused) {
+    section.classList.toggle("is-perk-paused", paused);
+  }
+
+  function sync() {
+    if (motionQuery.matches) {
+      setPaused(true);
+      return;
+    }
+    const rect = section.getBoundingClientRect();
+    const inView = rect.bottom > 0 && rect.top < window.innerHeight;
+    setPaused(!inView || document.hidden);
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (motionQuery.matches) {
+        setPaused(true);
+        return;
+      }
+      const visible = entries.some((entry) => entry.isIntersecting);
+      setPaused(!visible || document.hidden);
+    },
+    { threshold: 0 }
+  );
+
+  observer.observe(section);
+  motionQuery.addEventListener("change", sync);
+  document.addEventListener("visibilitychange", sync);
+  sync();
+}
+
+initPerkMotion();
