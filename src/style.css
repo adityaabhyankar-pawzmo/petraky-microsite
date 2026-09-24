@@ -382,6 +382,7 @@ body.is-live {
 }
 
 .hero-copy {
+  --hero-copy-gap: 20px;
   position: absolute;
   top: 40px;
   left: 50%;
@@ -389,57 +390,11 @@ body.is-live {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: var(--hero-copy-gap);
   width: min(650px, calc(100% - (var(--section-pad-x) * 2)));
   max-width: min(650px, calc(100% - (var(--section-pad-x) * 2)));
   transform: translateX(-50%);
   text-align: center;
-}
-
-.pill {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  max-width: 100%;
-  padding: 1px 8px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.4);
-  color: #c8c8c8;
-  font-size: clamp(12px, 3.4vw, 14px);
-  font-weight: 500;
-  line-height: 22px;
-  letter-spacing: 0.14px;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.pill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    105deg,
-    transparent 28%,
-    rgba(255, 255, 255, 0.08) 42%,
-    rgba(220, 214, 255, 0.28) 50%,
-    rgba(255, 255, 255, 0.08) 58%,
-    transparent 72%
-  );
-  transform: translateX(-130%);
-  animation: pill-shine 5.5s ease-in-out 1.2s infinite;
-}
-
-@keyframes pill-shine {
-  0%,
-  62% {
-    transform: translateX(-130%);
-  }
-  78%,
-  100% {
-    transform: translateX(130%);
-  }
 }
 
 .hero-copy h1,
@@ -536,6 +491,7 @@ body.is-live {
   align-items: center;
   width: 100%;
   max-width: 320px;
+  margin-top: calc(24px - var(--hero-copy-gap));
 }
 
 .hero .cta-note {
@@ -1523,14 +1479,9 @@ body.is-live {
   }
 
   .hero-copy {
+    --hero-copy-gap: 28px;
     top: 40px;
-    gap: 28px;
-  }
-
-  .pill {
-    padding: 5px 8px;
-    font-size: 14px;
-    white-space: nowrap;
+    gap: var(--hero-copy-gap);
   }
 
   .hero-copy h1,
@@ -1620,8 +1571,13 @@ body.is-live {
   }
 
   .hero-copy {
+    --hero-copy-gap: 20px;
     top: 80px;
-    gap: 20px;
+    gap: var(--hero-copy-gap);
+  }
+
+  .hero-lede-rest {
+    display: block;
   }
 
   .cta-block,
@@ -1812,10 +1768,6 @@ body.is-live {
   }
 
   .cta:hover::after {
-    animation: none;
-  }
-
-  .pill::after {
     animation: none;
   }
 
@@ -2100,6 +2052,17 @@ body.is-live {
 }
 
 @media (max-width: 699px) {
+  .cta-block,
+  .hero .cta-block {
+    width: 100%;
+    max-width: none;
+  }
+
+  .cta {
+    width: 100%;
+    height: 48px;
+  }
+
   .tally-popup {
     left: 0 !important;
     width: 100% !important;
