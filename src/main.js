@@ -597,30 +597,22 @@ function initHeroHeadline() {
 
 initHeroHeadline();
 
-function initMobileNavCta() {
+function initNavCta() {
   const nav = document.querySelector(".nav");
   const hero = document.querySelector(".hero");
   if (!nav || !hero) return;
 
-  const mobileQuery = window.matchMedia("(max-width: 699.98px)");
-
   function update() {
-    if (!mobileQuery.matches) {
-      nav.classList.remove("is-past-hero");
-      return;
-    }
-
     const pastHero = hero.getBoundingClientRect().bottom <= nav.offsetHeight;
     nav.classList.toggle("is-past-hero", pastHero);
   }
 
   window.addEventListener("scroll", update, { passive: true });
   window.addEventListener("resize", update);
-  mobileQuery.addEventListener("change", update);
   update();
 }
 
-initMobileNavCta();
+initNavCta();
 
 function initParallax() {
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -665,7 +657,7 @@ function initParallax() {
 
     if (hero && heroImg && inView(hero)) {
       const y = Math.round(-hero.getBoundingClientRect().top * 0.22);
-      heroImg.style.transform = `translate3d(0, ${y}px, 0) scale(1.16)`;
+      heroImg.style.transform = `translate3d(0, ${y}px, 0) scale(1.04)`;
     }
 
     if (note && noteLeft && noteCard && inView(note)) {
