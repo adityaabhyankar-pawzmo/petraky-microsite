@@ -451,7 +451,7 @@ body.is-live {
   overflow: hidden;
   color: #e6e6e6;
   font-size: clamp(36px, 10.2vw, 40px);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.15;
   text-wrap: balance;
   text-align: center;
@@ -519,7 +519,7 @@ body.is-live {
 .hero-lede {
   color: #d0d0d0;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 26px;
 }
 
@@ -549,7 +549,8 @@ body.is-live {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 12px 20px;
+  height: 48px;
+  padding: 0 20px;
   border: 0;
   border-radius: 30px;
   background: #fff;
@@ -1623,6 +1624,11 @@ body.is-live {
     gap: 20px;
   }
 
+  .cta-block,
+  .hero .cta-block {
+    max-width: 300px;
+  }
+
   .day {
     --day-gutter: 64px;
     background: #fff;
@@ -1744,7 +1750,7 @@ body.is-live {
 
   .note-cta {
     display: flex;
-    width: 358px;
+    width: 300px;
     max-width: 100%;
   }
 
