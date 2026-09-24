@@ -2029,17 +2029,22 @@ body.is-live {
   background-color: rgba(2, 11, 26, 0.82) !important;
 }
 
-.tally-popup {
+.tally-popup,
+.tally-popup [class*="_popupContainer"] {
   top: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
   height: 100dvh !important;
+  min-height: 100dvh !important;
   max-height: 100dvh !important;
   border-radius: 0 !important;
+  background: #fff !important;
+  overflow: hidden !important;
 }
 
 .tally-popup iframe {
   height: 100dvh !important;
+  min-height: 100dvh !important;
   max-height: 100dvh !important;
   border-radius: 0 !important;
 }

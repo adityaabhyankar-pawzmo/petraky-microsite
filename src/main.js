@@ -744,3 +744,50 @@ function initPerkMotion() {
 }
 
 initPerkMotion();
+
+/* Keep the Tally popup full-height after submit (thank-you page is shorter). */
+function initTallyPopupLock() {
+  const FULL = "100dvh";
+  let locking = false;
+
+  function lockEl(el) {
+    if (!el) return;
+    el.style.setProperty("height", FULL, "important");
+    el.style.setProperty("min-height", FULL, "important");
+    el.style.setProperty("max-height", FULL, "important");
+  }
+
+  function lockPopup() {
+    if (locking) return;
+    const popup = document.querySelector(".tally-popup");
+    if (!popup) return;
+    locking = true;
+    try {
+      lockEl(popup);
+      popup.style.setProperty("top", "0", "important");
+      popup.style.setProperty("bottom", "0", "important");
+      lockEl(popup.querySelector('[class*="_popupContainer"]'));
+      lockEl(popup.querySelector("iframe"));
+    } finally {
+      locking = false;
+    }
+  }
+
+  const observer = new MutationObserver(lockPopup);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["style"],
+  });
+
+  window.addEventListener("message", (event) => {
+    if (typeof event.data === "string" && event.data.includes("iframeResizer")) {
+      lockPopup();
+    }
+  });
+
+  lockPopup();
+}
+
+initTallyPopupLock();
