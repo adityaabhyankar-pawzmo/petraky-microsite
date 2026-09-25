@@ -3,8 +3,8 @@
   --white: #fff;
   --skip: rgba(255, 255, 255, 0.72);
   --page-gutter: 40px;
-  --logo-height: 104px;
-  --logo-top: 80px;
+  --logo-height: 72px;
+  --logo-top: 64px;
   --skip-size: 11px;
   --nav-height: 56px;
   --nav-pad-x: 16px;
@@ -84,17 +84,18 @@ body.is-live {
 .splash-logo {
   position: absolute;
   top: max(var(--logo-top), env(safe-area-inset-top, 0px) + 12px);
-  left: 50%;
+  left: 0;
+  right: 0;
   z-index: 6;
   width: min(
-    calc(var(--logo-height) * 519 / 208),
-    calc(100vw - (var(--page-gutter) * 2))
+    calc(var(--logo-height) * 542 / 221),
+    calc(100% - (var(--page-gutter) * 2))
   );
   height: auto;
-  aspect-ratio: 519 / 208;
+  margin-inline: auto;
+  aspect-ratio: 542 / 221;
   object-fit: contain;
-  object-position: top center;
-  transform: translateX(-50%);
+  object-position: center;
   pointer-events: none;
   opacity: 0;
   animation: logo-in 0.7s ease 0.25s forwards;
@@ -1950,16 +1951,16 @@ body.is-live {
 @media (max-width: 1023px) {
   :root {
     --page-gutter: 32px;
-    --logo-height: 80px;
-    --logo-top: 64px;
+    --logo-height: 56px;
+    --logo-top: 48px;
   }
 }
 
 @media (max-width: 767px) {
   :root {
     --page-gutter: 20px;
-    --logo-height: 60px;
-    --logo-top: 48px;
+    --logo-height: 44px;
+    --logo-top: 40px;
     --skip-size: 10px;
   }
 
@@ -1984,8 +1985,8 @@ body.is-live {
 @media (max-width: 479px) {
   :root {
     --page-gutter: 16px;
-    --logo-height: 52px;
-    --logo-top: 40px;
+    --logo-height: 40px;
+    --logo-top: 32px;
   }
 }
 
@@ -1998,8 +1999,8 @@ body.is-live {
 
 @media (max-height: 500px) and (orientation: landscape) {
   :root {
-    --logo-height: 44px;
-    --logo-top: 24px;
+    --logo-height: 36px;
+    --logo-top: 20px;
   }
 
   .hero {
