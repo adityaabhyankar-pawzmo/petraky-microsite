@@ -41,31 +41,10 @@ function syncBleed() {
   }
 }
 
-/* Keep the sharp frame just under cover on any phone aspect ratio. */
-const SPLASH_ZOOM_OUT = 0.88;
-
+/* Splash video uses object-fit: cover; no mobile letterbox scale needed. */
 function updateSplashFrame() {
-  if (!splash || !video) return;
-
-  if (!mobileSplash.matches) {
-    video.style.transform = "";
-    return;
-  }
-
-  const vw = splash.clientWidth || window.innerWidth;
-  const vh = splash.clientHeight || window.innerHeight;
-  if (vw <= 0 || vh <= 0) return;
-
-  const ratio =
-    video.videoWidth > 0 && video.videoHeight > 0
-      ? video.videoWidth / video.videoHeight
-      : 16 / 9;
-
-  const containH = vw / ratio;
-  const containW = vh * ratio;
-  const coverFactor = Math.max(vh / containH, vw / containW);
-  const scale = Math.max(1, coverFactor * SPLASH_ZOOM_OUT);
-  video.style.transform = `scale(${scale})`;
+  if (!video) return;
+  video.style.transform = "";
 }
 
 if ("scrollRestoration" in history) {
@@ -478,8 +457,8 @@ function initHeroHeadline() {
   if (!headline) return;
 
   const lines = [
-    'Leo <span class="hero-accent">walked 2.3 km</span> this morning.',
-    'Simba <span class="hero-accent">slept 7 hours</span> last night.',
+    'Leo <span class="hero-accent">walked 2.3&nbsp;km</span> this morning.',
+    'Simba <span class="hero-accent">slept 7&nbsp;hours</span> last night.',
     'Bella <span class="hero-accent">rested well</span> after her evening walk.',
     'Coco hit her <span class="hero-accent">activity goal</span> today.',
   ];
