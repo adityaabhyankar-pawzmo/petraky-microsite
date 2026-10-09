@@ -245,6 +245,10 @@ body.is-live {
   color: #0f1217;
 }
 
+.ticker-bottom {
+  background: #f8f7f3;
+}
+
 .ticker-track,
 .ticker-set {
   display: flex;
@@ -280,15 +284,16 @@ body.is-live {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 
 .ticker-dog img {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
+  filter: brightness(0);
 }
 
 .nav {
@@ -550,6 +555,76 @@ body.is-live {
 .nav-cta:focus-visible {
   outline: 2px solid #94b634;
   outline-offset: 3px;
+}
+
+@property --cta-border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@keyframes cta-border-light {
+  to {
+    --cta-border-angle: 360deg;
+  }
+}
+
+.cta,
+.nav-cta {
+  position: relative;
+  isolation: isolate;
+  border-color: transparent;
+  background:
+    linear-gradient(#121116, #121116) padding-box,
+    conic-gradient(
+      from var(--cta-border-angle),
+      rgba(255, 255, 255, 0.42) 0deg,
+      rgba(255, 255, 255, 0.42) 228deg,
+      rgba(255, 255, 255, 0.62) 286deg,
+      rgba(255, 255, 255, 0.92) 326deg,
+      #fff 342deg,
+      rgba(255, 255, 255, 0.72) 354deg,
+      rgba(255, 255, 255, 0.42) 360deg
+    ) border-box;
+  animation: cta-border-light 4.8s linear infinite;
+}
+
+.cta::before,
+.nav-cta::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -5px;
+  border-radius: 999px;
+  padding: 5px;
+  background: conic-gradient(
+    from var(--cta-border-angle),
+    transparent 0deg,
+    transparent 268deg,
+    rgba(255, 255, 255, 0.12) 314deg,
+    rgba(255, 255, 255, 0.7) 340deg,
+    rgba(255, 255, 255, 0.15) 358deg,
+    transparent 360deg
+  );
+  filter: blur(4px);
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.cta:hover::before,
+.nav-cta:hover::before,
+.cta:active::before,
+.nav-cta:active::before {
+  opacity: 0;
 }
 
 .cta::after {
@@ -1350,8 +1425,35 @@ body.is-live {
 }
 
 .note .cta {
-  background: #fff;
-  border-color: #0f1217;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    conic-gradient(
+      from var(--cta-border-angle),
+      rgba(15, 18, 23, 0.42) 0deg,
+      rgba(15, 18, 23, 0.42) 228deg,
+      rgba(15, 18, 23, 0.62) 286deg,
+      rgba(15, 18, 23, 0.92) 326deg,
+      #0f1217 342deg,
+      rgba(15, 18, 23, 0.72) 354deg,
+      rgba(15, 18, 23, 0.42) 360deg
+    ) border-box;
+}
+
+.note .cta::before {
+  background: conic-gradient(
+    from var(--cta-border-angle),
+    transparent 0deg,
+    transparent 268deg,
+    rgba(15, 18, 23, 0.1) 314deg,
+    rgba(15, 18, 23, 0.45) 340deg,
+    rgba(15, 18, 23, 0.12) 358deg,
+    transparent 360deg
+  );
+}
+
+.note .cta:hover::before,
+.note .cta:focus-visible::before {
+  opacity: 0;
 }
 
 .site .note .cta {
@@ -1831,11 +1933,24 @@ body.is-live {
 
   .cta,
   .nav-cta {
+    animation: none;
+    border-color: #fff;
+    background: #121116;
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease,
       color 0.2s ease,
       box-shadow 0.2s ease;
+  }
+
+  .cta::before,
+  .nav-cta::before {
+    content: none;
+  }
+
+  .note .cta {
+    border-color: #0f1217;
+    background: #fff;
   }
 
   .cta:hover,

@@ -85,7 +85,7 @@ function initTickers() {
   ];
   const dog = `
     <span class="ticker-dog">
-      <img src="assets/paw-print.svg?v=2" alt="" width="18" height="18" />
+      <img src="assets/ticker-dog.png?v=1" alt="" width="28" height="28" />
     </span>`;
   const set = `<div class="ticker-set">${phrases
     .map((text) => `<span class="ticker-copy">${text}</span>${dog}`)
