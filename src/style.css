@@ -433,7 +433,7 @@ body.is-live {
 }
 
 .hero-accent {
-  color: #94b634;
+  color: #97D700;
 }
 
 .hero-lede .hero-accent {
@@ -553,7 +553,7 @@ body.is-live {
 
 .cta:focus-visible,
 .nav-cta:focus-visible {
-  outline: 2px solid #94b634;
+  outline: 2px solid #97D700;
   outline-offset: 3px;
 }
 
@@ -1107,7 +1107,7 @@ body.is-live {
 }
 
 .founding h2 span {
-  color: #94b634;
+  color: #97D700;
 }
 
 .founding-lede {
