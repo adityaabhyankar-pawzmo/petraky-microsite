@@ -724,6 +724,213 @@ function initPerkMotion() {
 
 initPerkMotion();
 
+function initProcessStats() {
+  const list = document.querySelector(".process-stats");
+  if (!list) return;
+
+  const figures = [...list.querySelectorAll(".process-stat strong")];
+  if (!figures.length) return;
+
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const DURATION = 1200;
+  const STAGGER = 140;
+
+  const stats = figures.map((el) => {
+    const raw = el.textContent.trim();
+    const match = raw.match(/^(\d+)(.*)$/);
+    return {
+      el,
+      raw,
+      value: match ? Number(match[1]) : 0,
+      suffix: match ? match[2] : "",
+      digits: null,
+    };
+  });
+
+  let built = false;
+  let played = false;
+  let rafId = 0;
+  let timeoutId = 0;
+  let ticket = 0;
+
+  function build(stat) {
+    const sr = document.createElement("span");
+    sr.className = "stat-sr";
+    sr.textContent = stat.raw;
+
+    const visual = document.createElement("span");
+    visual.className = "stat-visual";
+    visual.setAttribute("aria-hidden", "true");
+
+    const digits = document.createElement("span");
+    digits.className = "stat-digits";
+    digits.textContent = String(stat.value);
+
+    visual.append(digits);
+    if (stat.suffix) {
+      const suffix = document.createElement("span");
+      suffix.className = "stat-suffix";
+      suffix.textContent = stat.suffix;
+      visual.append(suffix);
+    }
+
+    stat.el.replaceChildren(sr, visual);
+    stat.digits = digits;
+  }
+
+  function measure() {
+    for (const stat of stats) {
+      if (!stat.digits) continue;
+      const previous = stat.digits.textContent;
+      stat.digits.style.minWidth = "0px";
+      stat.digits.textContent = String(stat.value);
+      const width = Math.ceil(stat.digits.getBoundingClientRect().width);
+      stat.digits.textContent = previous;
+      stat.digits.style.minWidth = width ? `${width}px` : "";
+    }
+  }
+
+  function showFinal() {
+    for (const stat of stats) {
+      stat.el.classList.remove("is-rise");
+      stat.el.style.removeProperty("--stat-delay");
+      if (!stat.digits) continue;
+      stat.digits.textContent = String(stat.value);
+      stat.digits.style.minWidth = "";
+    }
+    list.classList.remove("is-in");
+  }
+
+  function easeOut(t) {
+    return 1 - (1 - t) ** 3;
+  }
+
+  function ensureBuilt() {
+    if (built) return;
+    for (const stat of stats) build(stat);
+    built = true;
+  }
+
+  function play() {
+    if (played || motionQuery.matches) return;
+    played = true;
+    ensureBuilt();
+    measure();
+    for (const [index, stat] of stats.entries()) {
+      if (stat.value <= 1) {
+        stat.el.classList.add("is-rise");
+        stat.el.style.setProperty("--stat-delay", `${index * STAGGER}ms`);
+      } else {
+        stat.digits.textContent = "0";
+      }
+    }
+    list.classList.add("is-in");
+
+    const start = performance.now();
+
+    function frame(now) {
+      let running = false;
+      for (const [index, stat] of stats.entries()) {
+        if (stat.value <= 1) continue;
+        const elapsed = now - start - index * STAGGER;
+        if (elapsed < 0) {
+          running = true;
+          continue;
+        }
+        const t = Math.min(1, elapsed / DURATION);
+        const current = Math.round(easeOut(t) * stat.value);
+        const next = String(current);
+        if (stat.digits.textContent !== next) stat.digits.textContent = next;
+        if (t < 1) running = true;
+      }
+      if (running) schedule();
+      else {
+        for (const stat of stats) {
+          if (stat.value <= 1 || !stat.digits) continue;
+          stat.digits.textContent = String(stat.value);
+          stat.digits.style.minWidth = "";
+        }
+      }
+    }
+
+    function schedule() {
+      const mine = ++ticket;
+      const run = (stamp) => {
+        if (mine !== ticket) return;
+        ticket += 1;
+        frame(typeof stamp === "number" ? stamp : performance.now());
+      };
+      rafId = requestAnimationFrame(run);
+      timeoutId = window.setTimeout(run, 32);
+    }
+
+    schedule();
+
+    window.setTimeout(() => {
+      for (const stat of stats) stat.el.classList.remove("is-rise");
+    }, DURATION + STAGGER * stats.length);
+  }
+
+  function inView() {
+    const rect = list.getBoundingClientRect();
+    if (rect.height <= 0) return false;
+    const vh = window.innerHeight || 1;
+    const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+    return visible / rect.height >= 0.35;
+  }
+
+  function tryPlay() {
+    if (played || motionQuery.matches) return;
+    if (inView()) play();
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) tryPlay();
+    },
+    { threshold: 0.35 }
+  );
+
+  function syncMotion() {
+    if (!motionQuery.matches) return;
+    ticket += 1;
+    cancelAnimationFrame(rafId);
+    window.clearTimeout(timeoutId);
+    observer.disconnect();
+    window.removeEventListener("scroll", tryPlay);
+    if (!played) {
+      if (built) showFinal();
+      played = true;
+    }
+  }
+
+  motionQuery.addEventListener("change", syncMotion);
+  window.addEventListener("scroll", tryPlay, { passive: true });
+  document.addEventListener("scroll", tryPlay, { passive: true, capture: true });
+  window.addEventListener("resize", tryPlay);
+
+  function watch() {
+    observer.observe(list);
+    tryPlay();
+  }
+
+  const splashEl = document.querySelector("#splash");
+  if (!splashEl || splashEl.classList.contains("is-gone") || document.body.classList.contains("is-live")) {
+    watch();
+  } else {
+    const splashWatch = new MutationObserver(() => {
+      if (splashEl.classList.contains("is-gone") || document.body.classList.contains("is-live")) {
+        splashWatch.disconnect();
+        watch();
+      }
+    });
+    splashWatch.observe(splashEl, { attributes: true, attributeFilter: ["class"] });
+    splashWatch.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  }
+}
+
+initProcessStats();
+
 /* Keep the Tally popup full-height after submit (thank-you page is shorter). */
 function initTallyPopupLock() {
   const FULL = "100dvh";
