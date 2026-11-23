@@ -266,14 +266,14 @@ body.is-live {
 .ticker-copy {
   flex-shrink: 0;
   color: #0f1217;
-  font-size: 64px;
-  font-weight: 600;
-  line-height: 64px;
-  letter-spacing: -0.04em;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: 1px;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-  font-variation-settings: "opsz" 64, "wdth" 100, "wght" 600;
+  font-variation-settings: "opsz" 22, "wdth" 100, "wght" 700;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -1604,7 +1604,7 @@ body.is-live {
 
 .note-team {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
 
@@ -1629,26 +1629,59 @@ body.is-live {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 105px;
+  gap: 0;
+  min-width: 0;
 }
 
-.note-team strong,
-.note-team span {
+.site .note-instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 2px 8px;
+  border: 1px solid #d8d4c8;
+  border-radius: 4px;
+  color: #1a1a1b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.site .note-instagram svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.site .note-instagram:hover,
+.site .note-instagram:focus-visible {
+  color: #af35e7;
+}
+
+.site .note-instagram:focus-visible {
+  outline: 2px solid #1a1a1b;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.note-team-copy > strong,
+.note-team-copy > span {
   display: block;
   min-width: 0;
-  line-height: 26px;
 }
 
-.note-team strong {
+.note-team-copy > strong {
   color: #1a1a1b;
   font-size: 16px;
   font-weight: 700;
+  line-height: 22px;
 }
 
-.note-team span {
+.note-team-copy > span {
   color: #6d6d6d;
   font-size: 14px;
   font-weight: 400;
+  line-height: 20px;
 }
 
 .legal {
