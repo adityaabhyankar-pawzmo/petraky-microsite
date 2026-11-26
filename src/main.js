@@ -593,6 +593,31 @@ function initNoteQuestion() {
   let clearing = 0;
   let running = false;
 
+  function lineHeight(line) {
+    return Math.ceil(line.getBoundingClientRect().height);
+  }
+
+  function fit(animate) {
+    const line = lines[index];
+    const next = lineHeight(line);
+    if (!next) return;
+
+    const current = Math.ceil(slot.getBoundingClientRect().height);
+    if (!animate || motionQuery.matches || current === next) {
+      const previous = slot.style.transition;
+      slot.style.transition = "none";
+      slot.style.height = `${next}px`;
+      void slot.offsetWidth;
+      slot.style.transition = previous;
+      return;
+    }
+
+    slot.style.height = `${current}px`;
+    window.requestAnimationFrame(() => {
+      slot.style.height = `${next}px`;
+    });
+  }
+
   function clearTimer() {
     window.clearTimeout(timer);
   }
@@ -618,6 +643,7 @@ function initNoteQuestion() {
     outgoing.classList.remove("is-in", "is-entering");
     if (!motionQuery.matches) outgoing.classList.add("is-out");
     outgoing.setAttribute("aria-hidden", "true");
+    fit(true);
 
     clearing = window.setTimeout(() => {
       outgoing.classList.remove("is-out");
@@ -659,7 +685,13 @@ function initNoteQuestion() {
   });
   motionQuery.addEventListener("change", () => {
     lines.forEach((line) => line.classList.remove("is-entering", "is-out"));
+    fit(false);
   });
+  window.addEventListener("resize", () => fit(false));
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => fit(false));
+  }
+  fit(false);
 }
 
 initNoteQuestion();

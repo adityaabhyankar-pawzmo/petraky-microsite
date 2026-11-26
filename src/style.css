@@ -1542,9 +1542,11 @@ body.is-live {
 .note-question {
   display: grid;
   align-items: start;
+  position: relative;
   width: 100%;
   overflow: hidden;
   color: #af35e7;
+  transition: height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .note-question-line {
@@ -1553,7 +1555,15 @@ body.is-live {
   pointer-events: none;
 }
 
+.note-question-line:not(.is-in) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 .note-question-line.is-in {
+  position: relative;
   z-index: 1;
   opacity: 1;
 }
@@ -2173,6 +2183,10 @@ body.is-live {
   .note-question.is-ready .note-question-line.is-out {
     animation: none;
     transform: none;
+  }
+
+  .note-question {
+    transition: none;
   }
 
   .cta,
