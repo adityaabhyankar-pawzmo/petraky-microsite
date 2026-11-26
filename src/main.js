@@ -718,13 +718,6 @@ function initParallax() {
   const desktopQuery = window.matchMedia("(min-width: 1024px)");
   const hero = document.querySelector(".hero");
   const heroImg = document.querySelector(".hero-media img");
-  const note = document.querySelector(".note");
-  const noteLeft = document.querySelector(".note-left");
-  const noteCard = document.querySelector(".note-card");
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
 
   function inView(el, pad = 120) {
     if (!el) return false;
@@ -732,16 +725,8 @@ function initParallax() {
     return rect.bottom > -pad && rect.top < window.innerHeight + pad;
   }
 
-  function viewOffset(el) {
-    const rect = el.getBoundingClientRect();
-    const vh = window.innerHeight || 1;
-    return clamp((rect.top + rect.height / 2 - vh / 2) / vh, -0.7, 0.7);
-  }
-
   function reset() {
     if (heroImg) heroImg.style.transform = "";
-    if (noteLeft) noteLeft.style.transform = "";
-    if (noteCard) noteCard.style.transform = "";
   }
 
   function enabled() {
@@ -757,15 +742,6 @@ function initParallax() {
     if (hero && heroImg && inView(hero)) {
       const y = Math.round(-hero.getBoundingClientRect().top * 0.22);
       heroImg.style.transform = `translate3d(0, ${y}px, 0) scale(1.04)`;
-    }
-
-    if (note && noteLeft && noteCard && inView(note)) {
-      const offset = viewOffset(note);
-      noteLeft.style.transform = `translate3d(0, ${Math.round(offset * 28)}px, 0)`;
-      noteCard.style.transform = `translate3d(0, ${Math.round(offset * -18)}px, 0)`;
-    } else {
-      if (noteLeft) noteLeft.style.transform = "";
-      if (noteCard) noteCard.style.transform = "";
     }
   }
 

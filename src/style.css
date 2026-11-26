@@ -1507,11 +1507,6 @@ body.is-live {
   width: 100%;
 }
 
-.note-left,
-.note-card {
-  will-change: transform;
-}
-
 .note-copy {
   display: flex;
   flex-direction: column;
@@ -2112,7 +2107,7 @@ body.is-live {
 
   .note {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     gap: 64px;
     padding: 96px var(--section-pad-x) 120px;
   }
