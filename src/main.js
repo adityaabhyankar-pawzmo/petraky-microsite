@@ -78,10 +78,11 @@ function revealSite() {
 function initTickers() {
   const phrases = [
     "A society built for DOGS",
+    "More movement, more good years",
     "A society built for DOGS",
+    "More movement, more good years",
     "A society built for DOGS",
-    "A society built for DOGS",
-    "A society built for DOGS",
+    "More movement, more good years",
   ];
   const dog = `
     <span class="ticker-dog">
@@ -575,6 +576,93 @@ function initHeroHeadline() {
 }
 
 initHeroHeadline();
+
+function initNoteQuestion() {
+  const slot = document.querySelector(".note-question");
+  if (!slot) return;
+
+  const lines = [...slot.querySelectorAll(".note-question-line")];
+  if (lines.length < 2) return;
+
+  const HOLD_MS = 3800;
+  const TRANSITION_MS = 800;
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  let index = 0;
+  let timer = 0;
+  let clearing = 0;
+  let running = false;
+
+  function clearTimer() {
+    window.clearTimeout(timer);
+  }
+
+  function schedule() {
+    clearTimer();
+    if (!running) return;
+    timer = window.setTimeout(advance, HOLD_MS);
+  }
+
+  function advance() {
+    const outgoing = lines[index];
+    index = (index + 1) % lines.length;
+    const incoming = lines[index];
+
+    window.clearTimeout(clearing);
+    incoming.classList.remove("is-out", "is-entering");
+    void incoming.offsetWidth;
+    incoming.classList.add("is-in");
+    if (!motionQuery.matches) incoming.classList.add("is-entering");
+    incoming.removeAttribute("aria-hidden");
+
+    outgoing.classList.remove("is-in", "is-entering");
+    if (!motionQuery.matches) outgoing.classList.add("is-out");
+    outgoing.setAttribute("aria-hidden", "true");
+
+    clearing = window.setTimeout(() => {
+      outgoing.classList.remove("is-out");
+      incoming.classList.remove("is-entering");
+    }, motionQuery.matches ? 0 : TRANSITION_MS);
+
+    schedule();
+  }
+
+  function inView() {
+    const rect = slot.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+  }
+
+  function start() {
+    if (running || document.hidden || !inView()) return;
+    running = true;
+    slot.classList.add("is-ready");
+    schedule();
+  }
+
+  function stop() {
+    running = false;
+    clearTimer();
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) start();
+      else stop();
+    },
+    { threshold: 0.4 }
+  );
+
+  observer.observe(slot);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop();
+    else start();
+  });
+  motionQuery.addEventListener("change", () => {
+    lines.forEach((line) => line.classList.remove("is-entering", "is-out"));
+  });
+}
+
+initNoteQuestion();
 
 function initNavCta() {
   const nav = document.querySelector(".nav");
