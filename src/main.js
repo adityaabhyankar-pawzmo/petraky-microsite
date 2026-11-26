@@ -588,10 +588,46 @@ function initNoteQuestion() {
   const TRANSITION_MS = 800;
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  const noteLeft = slot.closest(".note-left");
+
   let index = 0;
   let timer = 0;
   let clearing = 0;
   let running = false;
+
+  function lineHeight(line) {
+    return Math.ceil(line.getBoundingClientRect().height);
+  }
+
+  function fit(animate) {
+    const next = lineHeight(lines[index]);
+    if (!next) return;
+
+    const max = Math.max(next, ...lines.map(lineHeight));
+    const current = Math.ceil(slot.getBoundingClientRect().height);
+    const previous = slot.style.transition;
+    slot.style.transition = "none";
+
+    if (noteLeft) {
+      noteLeft.style.minHeight = "";
+      slot.style.height = `${max}px`;
+      noteLeft.style.minHeight = `${Math.ceil(noteLeft.getBoundingClientRect().height)}px`;
+      slot.style.height = `${current || next}px`;
+    }
+
+    if (!animate || motionQuery.matches || current === next) {
+      slot.style.height = `${next}px`;
+      void slot.offsetWidth;
+      slot.style.transition = previous;
+      return;
+    }
+
+    void slot.offsetWidth;
+    slot.style.transition = previous;
+    window.requestAnimationFrame(() => {
+      slot.style.height = `${next}px`;
+    });
+  }
 
   function clearTimer() {
     window.clearTimeout(timer);
@@ -618,6 +654,7 @@ function initNoteQuestion() {
     outgoing.classList.remove("is-in", "is-entering");
     if (!motionQuery.matches) outgoing.classList.add("is-out");
     outgoing.setAttribute("aria-hidden", "true");
+    fit(true);
 
     clearing = window.setTimeout(() => {
       outgoing.classList.remove("is-out");
@@ -659,7 +696,13 @@ function initNoteQuestion() {
   });
   motionQuery.addEventListener("change", () => {
     lines.forEach((line) => line.classList.remove("is-entering", "is-out"));
+    fit(false);
   });
+  window.addEventListener("resize", () => fit(false));
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => fit(false));
+  }
+  fit(false);
 }
 
 initNoteQuestion();
